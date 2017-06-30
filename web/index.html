@@ -1,7 +1,197 @@
 <!doctype html>
 <html lang=en>
-  <head>
-    <title></title>
-  </head>
-  <body></body>
+<head>
+    <title>twebo</title>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+
+<body id="body">
+    <div id="content">
+    </div>
+
+    <script>
+        /* Basic debug logging. */
+        var log = function (m) {
+            console.log(new Date().toISOString() + ' ' + m);
+        };
+
+
+        /* System. */
+
+        function SystemModel() {
+            this._messages = [];
+        }
+
+        SystemModel.prototype.addZone = function(zone) {
+            var i;
+            var len = this._zones.length;
+            for (i = 0; i < len; i++) {
+                if (this._zones[i].id() == zone.id()) {
+                    log("Received duplicate addZone for: " + zone.id());
+                    return false;
+                }
+            }
+            this._zones.push(zone);
+            this.zoneAdded.notify({zone: zone});
+            return true;
+        };
+
+        SystemModel.prototype.getZone = function(zoneId) {
+            var i;
+            var len = this._zones.length;
+            for (i = 0; i < len; i++) {
+                if (this._zones[i].id() == zoneId) {
+                    return this._zones[i];
+                }
+            }
+
+            return null;
+        };
+
+
+        function SystemView(model, parent) {
+            this._model = model;
+            this._parent = parent;
+            this._element = document.createElement('div');
+
+            this._parent.element().appendChild(this._element);
+        }
+
+        SystemView.prototype.element = function() {
+            return this._element;
+        };
+
+
+        function SystemController() {
+            this._model = new SystemModel();
+            var element = document.getElementById("content");
+            this._view = new SystemView(this._model, {element: function() {return element; }});
+
+            this._serverUrl = 'ws://127.0.0.1:30030/';
+            this._socket = null;
+            this._heartbeats = 0;
+            this._zones = {}
+
+            this.updateWhispererEvent = new Event(this);
+        }
+
+        SystemController.prototype.model = function() {
+            return this._model;
+        };
+
+        SystemController.prototype.view = function() {
+            return this._view;
+        };
+
+        SystemController.prototype.checkHeartbeat = function() {
+            if (this._socket == null) {
+                // Try to reconnect.
+                log("Reconnecting ...")
+                this.connect();
+                return;
+            }
+
+            if (this._heartbeats == 0) {
+                log("No heartbeats received from twebo server.");
+                this._socket.close()
+                this._socket = null;
+                return;
+            }
+
+            this._heartbeats = 0;
+        };
+
+        SystemController.prototype.handleLogin = function(event) {
+            log("handleLogin");
+        };
+
+        SystemController.prototype.handleCreateChannel = function(event) {
+            log("handleCreateChannel");
+        };
+
+        SystemController.prototype.handleModifyChannel = function(event) {
+            log("handleModifyChannel");
+        };
+
+        SystemController.prototype.handleMessage = function(event) {
+            log("handleMessage");
+        };
+
+        SystemController.prototype.dispatch = function(m) {
+            var msg = JSON.parse(m.data);
+            if (!msg.hasOwnProperty("MessageType")) {
+                log("Dropping malformed message: " + m.data);
+                return;
+            }
+
+            log("Message: " + msg.MessageType);
+            switch (msg.MessageType) {
+                case 'v1.heartbeat':
+                    this._heartbeats += 1;
+                    break;
+
+                case 'v1.login_response':
+                    this.handleLogin(msg);
+                    break;
+
+                case 'v1.create_channel_response':
+                    this.handleCreateChannel(msg);
+                    break;
+
+                case 'v1.modify_channel_response':
+                    this.handleModifyChannel(msg);
+                    break;
+
+                case 'v1.subscription_response':
+                    this.handleSubscription(msg);
+                    break;
+
+                case 'v1.message':
+                    this.handleMessage(msg);
+                    break;
+
+                default:
+                    log("Received unhandled message: " + msg.message)
+                    break;
+            }
+        };
+
+        SystemController.prototype.connect = function() {
+            var self = this;
+
+            log('Opening server connection: ' + this._serverUrl);
+            this._socket = new WebSocket(this._serverUrl);
+            this._socket.addEventListener('open', function () {
+                log('Server connected.');
+            });
+            this._socket.addEventListener('message', function (m) {
+                self.dispatch(m);
+            });
+            this._socket.addEventListener('error', function () {
+                log('Server connection error.');
+            });
+            this._socket.addEventListener('close', function() {
+                log('Server disconnected.');
+            });
+        };
+
+        SystemController.prototype.run = function() {
+            var self = this;
+
+            /* Initiate connection to server. */
+            this.connect();
+
+            /* Check for heartbeats every 5 seconds. */
+            setInterval(function() { self.checkHeartbeat(); }, 5000);
+        };
+
+
+        /* Startup. */
+        var controller = new SystemController(parent);
+        controller.run();
+
+    </script>
+</body>
 </html>

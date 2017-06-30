@@ -25,6 +25,10 @@ class TweboServerProtocol(WebSocketServerProtocol):
         if not is_binary:
             pass
 
+        print(payload)
+        return
+
+
     def connectionLost(self, reason):
         WebSocketServerProtocol.connectionLost(self, reason)
         self.factory.unregister(self)

@@ -103,6 +103,12 @@
             this._heartbeats = 0;
         };
 
+        SystemController.prototype.doLogin = function() {
+            log("doLogin");
+            var m = '{ "MessageType": "v1.login_request", "RequestId": "1", "UserId": "d", "Password": "d", "Channels": [] }';
+            this._socket.send(m);
+        };
+
         SystemController.prototype.handleLogin = function(event) {
             log("handleLogin");
         };
@@ -165,6 +171,7 @@
             this._socket = new WebSocket(this._serverUrl);
             this._socket.addEventListener('open', function () {
                 log('Server connected.');
+                self.doLogin();
             });
             this._socket.addEventListener('message', function (m) {
                 self.dispatch(m);

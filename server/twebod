@@ -1,0 +1,57 @@
+#! /usr/bin/env python3
+######################################################################
+# Copyright (C) 2017 Cobaro
+######################################################################
+
+import sys
+
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.web.server import Site
+from twisted.web.static import File
+
+from autobahn.twisted.websocket import WebSocketServerFactory, \
+     WebSocketServerProtocol, listenWS
+
+from twebo import *
+
+
+class TweboServerProtocol(WebSocketServerProtocol):
+
+    def onOpen(self):
+        self.factory.register(self)
+
+    def onMessage(self, payload, is_binary):
+        if not is_binary:
+            pass
+
+    def connectionLost(self, reason):
+        WebSocketServerProtocol.connectionLost(self, reason)
+        self.factory.unregister(self)
+
+class TweboServerFactory(WebSocketServerFactory):
+
+    def __init__(self, url):
+        WebSocketServerFactory.__init__(self, url)
+
+
+def main():
+    # Log to stdout (systemd, bah).
+    log.startLogging(sys.stdout)
+
+    # WebSockets server.
+    factory = TweboServerFactory(u"ws://127.0.0.1:30030")
+    factory.protocol = TweboServerProtocol
+    listenWS(factory)
+
+    # Web server.
+    webdir = File("../web")
+    website = Site(webdir)
+    reactor.listenTCP(8080, website)
+
+    reactor.run()
+    return
+
+
+if __name__ == "__main__":
+    main()

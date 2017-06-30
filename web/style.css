@@ -1,0 +1,33 @@
+#body {
+    background: #444444;
+}
+
+div.message {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+div.time {
+    color: #999999;
+    width: 5%;
+}
+
+div.channel {
+    color: white;
+    width: 10%;
+}
+
+div.user {
+    color: white;
+    width: 10%;
+}
+
+div.body {
+    width: 70%;
+}
+
+div.text {
+    color: white;
+}

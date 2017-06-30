@@ -29,10 +29,38 @@ class TweboServerProtocol(WebSocketServerProtocol):
         WebSocketServerProtocol.connectionLost(self, reason)
         self.factory.unregister(self)
 
+
 class TweboServerFactory(WebSocketServerFactory):
 
     def __init__(self, url):
         WebSocketServerFactory.__init__(self, url)
+        self.clients = []
+
+        # Initialise heartbeat timer.
+        reactor.callLater(1, self.heartbeat)
+        return
+
+    def register(self, client):
+        if client not in self.clients:
+            print("Registered client {}".format(client.peer))
+            self.clients.append(client)
+
+    def unregister(self, client):
+        if client in self.clients:
+            print("Unregistered client {}".format(client.peer))
+            self.clients.remove(client)
+
+    def heartbeat(self):
+        """Broadcast heartbeat to all subscribers."""
+        self.broadcast('{ "MessageType": "v1.heartbeat" }')
+        reactor.callLater(1, self.heartbeat)
+        return
+
+    def broadcast(self, msg):
+        for c in self.clients:
+            c.sendMessage(msg.encode('utf8'))
+            print("Message {} sent to {}".format(msg, c.peer))
+
 
 
 def main():
@@ -40,7 +68,7 @@ def main():
     log.startLogging(sys.stdout)
 
     # WebSockets server.
-    factory = TweboServerFactory(u"ws://127.0.0.1:30030")
+    factory = TweboServerFactory(u"ws://0.0.0.0:30030")
     factory.protocol = TweboServerProtocol
     listenWS(factory)
 

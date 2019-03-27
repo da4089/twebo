@@ -1,0 +1,4 @@
+mac-venv
+venv*
+.idea
+__pycache__

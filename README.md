@@ -123,3 +123,53 @@ When / how are older messages downloaded?  When you scroll to the top?
 We kinda want to get n messages for the *user*, not per *group*.  That
 has major impact on the API.
 
+Presence.  And/or typing indication.
+
+Garbage collection of deleted and/or thread-killed messages.
+
+
+Data Model
+==========
+
+User / Account
+- Login + password
+- List of subscriptions
+  - With maybe some local/remote differences
+
+Subscription
+- User reference
+- Group name
+
+Message
+- From, Group, Message, Attachments, Id, In-Reply-To, etc
+
+Delivery
+- Message reference
+- User reference
+- Subscripton reference?
+  - This could go away, if it's subsequently unsubscribed
+
+
+
+Queries
+- Insert new user
+- Disable user
+- Enable user
+- Set user's password
+- Delete user
+
+- Insert subscription
+- Delete subscription
+- Get subscriptions for group
+- Get subscriptions for user
+
+- Insert new message
+
+- Insert delivery record
+- Get delivered messages
+- Read delivered message
+- Delete delivered message
+- Kill delivered thread
+- Delete delivery
+- Get un-read deliveries for user
+

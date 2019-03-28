@@ -127,6 +127,8 @@ Presence.  And/or typing indication.
 
 Garbage collection of deleted and/or thread-killed messages.
 
+Subscription permissions, with consequences for group creation.
+
 
 Data Model
 ==========
@@ -149,9 +151,9 @@ Delivery
 - Subscripton reference?
   - This could go away, if it's subsequently unsubscribed
 
-
-
 Queries
+-------
+
 - Insert new user
 - Disable user
 - Enable user

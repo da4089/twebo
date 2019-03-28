@@ -15,11 +15,19 @@
     <div id="content">
 
         <div class="compose-pane">
-            <div>To</div>
-            <div>From</div>
-            <div>Text</div>
+            <div>
+                <label for="select-group">To</label>
+                <select id="select-group">
+                    <option value="Chat">Chat</option>
+                    <option value="elvin">elvin</option>
+                    <option value="lunch">lunch</option>
+                    <option value="zaphod">zaphod</option>
+                </select>
+            </div>
+            <div><label for="text-from">From</label> <input id="text-from"/></div>
+            <div><label for="text-text">Text</label> <input id="text-text"/></div>
             <div>Attachments</div>
-            <div>Send</div>
+            <div><button type="button" class="btn btn-primary" id="btn-send">Send</button></div>
         </div>
 
         <div class="history-pane">
@@ -33,9 +41,49 @@
             console.log(new Date().toISOString() + ' ' + m);
         };
 
+        function uuidv4() {
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            )
+        }
 
         /* System. */
 
+        function ComposerModel() {
+            this._to = "";
+            this._from = "";
+            this._text = "";
+            this._attachments = [];
+            this._timeout = 30;
+            this._in_reply_to = null;
+        }
+
+        ComposerModel.prototype.getMessage = function() {
+            let m = {};
+            m["MessageType"] = "v1.publish";
+            m["Message-Id"] = uuidv4();
+            m["Group"] = this._to;
+            m["From"] = this._from;
+            m["Message"] = this._text;
+            m["Timeout"] = this._timeout;
+
+            if (this._in_reply_to !== null) {
+                m["In-Reply-To"] = this._in_reply_to;
+            }
+
+            let buf = JSON.stringify(m);
+
+            this._socket.send(buf);
+        };
+
+
+
+        function ComposerView() {
+
+        }
+
+
+        
         function SystemModel() {
             this._messages = [];
         }
@@ -104,14 +152,14 @@
         SystemController.prototype.checkHeartbeat = function() {
             if (this._socket == null) {
                 // Try to reconnect.
-                log("Reconnecting ...")
+                log("Reconnecting ...");
                 this.connect();
                 return;
             }
 
-            if (this._heartbeats == 0) {
+            if (this._heartbeats === 0) {
                 log("No heartbeats received from twebo server.");
-                this._socket.close()
+                this._socket.close();
                 this._socket = null;
                 return;
             }
@@ -200,6 +248,10 @@
             });
         };
 
+        SystemController.prototype.sendMessage = function() {
+
+        }
+
         SystemController.prototype.run = function() {
             var self = this;
 
@@ -214,6 +266,8 @@
         /* Startup. */
         var controller = new SystemController(parent);
         controller.run();
+
+
 
     </script>
 

@@ -4,42 +4,52 @@
 ######################################################################
 
 
-class User(object):
+class User:
     def __init__(self):
         self.nick = ''
         self.login = ''
-        self.subscriptions = []
+        self.subscriptions = {}  # group: sub
+        self.queue = []  # Delivery instances
         return
 
 
-class Channel(object):
+class Group:
     def __init__(self):
         self.name = ''
         return
 
 
-class Subscription(object):
+class Subscription:
     def __init__(self):
         self.user = None
-        self.channel = None
-        self.last_seq = 0
-        self.last_read = 0
+        self.group = None
+        self.timestamp = 0
         return
 
 
-class Message(object):
+class Message:
     def __init__(self):
-        self.time = 0
-        self.channel = None
-        self.user = None
+        self.timestamp = 0
+        self.group = None
+        self.from_ = None
         self.message = ''
         self.in_reply_to = None
         return
 
 
-class Database(object):
+class Delivery:
+    def __init__(self):
+        self.user = None
+        self.subscription = None
+        self.message = None
+        self.read = False
+        self.killed = False
+        return
+
+
+class Server:
     def __init__(self):
         self.users = {}
-        self.channels = {}
+        self.groups = {}
         self.messages = {}
         return

@@ -1,6 +1,12 @@
 #body {
-    background: #444444;
-    font-family: sans-serif;
+    background: #2a2a2e;
+    font-family: Consolas, monospace;
+    font-size: medium;
+}
+
+#content {
+    display: grid;
+    grid-template-columns: min-content min-content 1fr;
 }
 
 div.message {
@@ -9,23 +15,24 @@ div.message {
     padding: 0px;
 }
 
+div.message:hover {
+    background: #484b25;
+}
+
 div.time {
-    color: #999999;
-    font-size: small;
+    color: #9e7bd7;
     padding: 4px;
     align-self: center;
 }
 
 div.group {
-    color: #999999;
-    font-size: small;
+    color: #e372d0;
     padding: 4px;
     align-self: center;
 }
 
 div.user {
-    color: #999999;
-    font-size: small;
+    color: #66a2d7;
     padding: 4px;
     align-self: center;
 }
@@ -41,7 +48,9 @@ div.presence-pane {
     grid-column: 1;
     display: flex;
     flex-direction: column;
-    background: #555555;
+    background: #1b1b1d;
+    padding: 5px;
+    margin: 5px;
 }
 
 div.presence-group {
@@ -50,8 +59,12 @@ div.presence-group {
     justify-content: flex-start;
 }
 
+div.presence-group:hover {
+    background: #484b25;
+}
+
 div.presence-user {
-    color: white;
+    color: #66a2d7;
     align-self: center;
     padding-left: 5px;
     padding-right: 10px;
@@ -79,26 +92,65 @@ div.presence-status {
 .presence-control {
     grid-row: 1;
     grid-column: 2;
+    padding: 5px;
+    margin: 5px;
 }
 
 #presence-button {
-    color: black;
+    color: aliceblue;
     padding: 5px;
-    background: aliceblue;
+    background: #1b1b1d;
     border-style: solid;
+    border-color: #1b1b1d;
     border-radius: 8px;
+}
+
+#presence-button:hover {
+    background: #484b25;
 }
 
 .history-pane {
     grid-row: 1;
     grid-column: 3;
+    padding: 5px;
+    margin: 5px;
 }
 
 .compose-pane {
     grid-row: 2;
-    grid-column: 2 / 4;
+    grid-column: 3; //2 / 4;
+    padding: 5px;
+    margin: 5px;
 }
-#content {
-    display: grid;
-    grid-template-columns: min-content min-content 1fr;
+
+.compose-label {
+    color: #9e7bd7;
+}
+
+#select-group {
+    background: #1b1b1d;
+    color: #eeeeee;
+    border: 0;
+    font-size: medium;
+    padding: 2px;
+}
+
+#text-from {
+    background: #1b1b1d;
+    color: #eeeeee;
+    border-width: 0;
+    font-size: medium;
+    padding: 2px;
+}
+
+#text-text {
+    background: #1b1b1d;
+    color: #eeeeee;
+    border-width: 0;
+    font-size: medium;
+    padding: 2px;
+}
+
+.compose-group {
+    margin: 5px;
 }

@@ -42,7 +42,7 @@
             <!-- Example message -->
             <div class="message">
                 <div class="time">
-                    09:04
+                    Today, 09:04
                 </div>
                 <div class="group">
                     Chat
@@ -58,7 +58,7 @@
             <!-- Example message -->
             <div class="message">
                 <div class="time">
-                    09:04
+                    Today, 09:04
                 </div>
                 <div class="group">
                     Chat
@@ -74,7 +74,7 @@
             <!-- Example message -->
             <div class="message">
                 <div class="time">
-                    09:04
+                    Today, 09:04
                 </div>
                 <div class="group">
                     Chat
@@ -89,8 +89,8 @@
         </div>
 
         <div class="compose-pane">
-            <div>
-                <label for="select-group">To</label>
+            <div class="compose-group">
+                <label class="compose-label" for="select-group">To</label>
                 <select id="select-group">
                     <option value="Chat">Chat</option>
                     <option value="elvin">elvin</option>
@@ -98,10 +98,10 @@
                     <option value="zaphod">zaphod</option>
                 </select>
             </div>
-            <div><label for="text-from">From</label> <input id="text-from"/></div>
-            <div><label for="text-text">Text</label> <input id="text-text"/></div>
-            <div>Attachments</div>
-            <div><button type="button" class="btn btn-primary" id="btn-send">Send</button></div>
+            <div class="compose-group"><label class="compose-label" for="text-from">From</label> <input id="text-from"/></div>
+            <div class="compose-group"><label class="compose-label" for="text-text">Text</label> <input id="text-text"/></div>
+            <!-- <div>Attachments</div> -->
+            <div class="compose-group"><button type="button" class="btn btn-primary" id="btn-send">Send</button></div>
         </div>
     </div>
 

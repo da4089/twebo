@@ -5,7 +5,9 @@
     <meta charset=utf-8>
     <meta name=viewport content="width=device-width, initial-scale=1">
 
+    <!--
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    -->
     <link rel="stylesheet" type="text/css" href="style.css"/>
 
 
@@ -13,6 +15,78 @@
 
 <body id="body">
     <div id="content">
+        <div id="presence-pane"  class="presence-pane">
+            <div class="presence-group">
+                <div class="presence-status presence-active">&bull;</div>
+                <div class="presence-user">bill</div>
+            </div>
+            <div class="presence-group">
+                <div class="presence-status presence-active">&bull;</div>
+                <div class="presence-user">d</div>
+            </div>
+            <div class="presence-group">
+                <div class="presence-status presence-idle">&bull;</div>
+                <div class="presence-user">tom</div>
+            </div>
+            <div class="presence-group">
+                <div class="presence-status presence-offline">&bull;</div>
+                <div class="presence-user">longnameexample</div>
+            </div>
+        </div>
+
+        <div class="presence-control">
+            <div id="presence-button">&lt;</div>
+        </div>
+
+        <div class="history-pane">
+            <!-- Example message -->
+            <div class="message">
+                <div class="time">
+                    09:04
+                </div>
+                <div class="group">
+                    Chat
+                </div>
+                <div class="user">
+                    bill
+                </div>
+                <div class="text">
+                    Bored, are we?
+                </div>
+            </div>
+
+            <!-- Example message -->
+            <div class="message">
+                <div class="time">
+                    09:04
+                </div>
+                <div class="group">
+                    Chat
+                </div>
+                <div class="user">
+                    bill
+                </div>
+                <div class="text">
+                    &nbsp;&nbsp;Bored, are we?
+                </div>
+            </div>
+
+            <!-- Example message -->
+            <div class="message">
+                <div class="time">
+                    09:04
+                </div>
+                <div class="group">
+                    Chat
+                </div>
+                <div class="user">
+                    bill
+                </div>
+                <div class="text">
+                    &nbsp;&nbsp;&nbsp;&nbsp;Bored, are we?
+                </div>
+            </div>
+        </div>
 
         <div class="compose-pane">
             <div>
@@ -29,10 +103,6 @@
             <div>Attachments</div>
             <div><button type="button" class="btn btn-primary" id="btn-send">Send</button></div>
         </div>
-
-        <div class="history-pane">
-
-        </div>
     </div>
 
     <script>
@@ -41,30 +111,18 @@
             console.log(new Date().toISOString() + ' ' + m);
         };
 
-        function uuidv4() {
-            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            )
-        }
-
         /* System. */
 
         function ComposerModel() {
-            this._to = "";
-            this._from = "";
-            this._text = "";
-            this._attachments = [];
-            this._timeout = 30;
-            this._in_reply_to = null;
+            this.clear();
         }
 
         ComposerModel.prototype.getMessage = function() {
             let m = {};
             m["MessageType"] = "v1.publish";
-            m["Message-Id"] = uuidv4();
-            m["Group"] = this._to;
+            m["Group"] = this._group;
             m["From"] = this._from;
-            m["Message"] = this._text;
+            m["Message"] = this._message;
             m["Timeout"] = this._timeout;
 
             if (this._in_reply_to !== null) {
@@ -76,16 +134,37 @@
             this._socket.send(buf);
         };
 
+        ComposerModel.prototype.clear = function() {
+            this._group = "";
+            this._from = "";
+            this._message = "";
+            this._timeout = 30;
+            this._in_reply_to = null;
+        };
 
 
-        function ComposerView() {
+        function ComposerView(model, parent) {
+            this._model = model;
+            this._parent = parent;
+        }
+
+
+
+        function HistoryModel() {
 
         }
 
 
-        
+        function HistoryView(model, parent) {
+            this._model = model;
+            this._parent = parent;
+        }
+
+
+
         function SystemModel() {
-            this._messages = [];
+            this._composer = new ComposerModel();
+            this._history = new HistoryModel();
         }
 
         SystemModel.prototype.addZone = function(zone) {
@@ -113,6 +192,7 @@
 
             return null;
         };
+
 
 
         function SystemView(model, parent) {
@@ -271,8 +351,10 @@
 
     </script>
 
+    <!--
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    -->
 </body>
 </html>

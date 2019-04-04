@@ -1,33 +1,104 @@
 #body {
     background: #444444;
+    font-family: sans-serif;
 }
 
 div.message {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
-    padding: 10px;
+    padding: 0px;
 }
 
 div.time {
     color: #999999;
-    width: 5%;
+    font-size: small;
+    padding: 4px;
+    align-self: center;
 }
 
-div.channel {
-    color: white;
-    width: 10%;
+div.group {
+    color: #999999;
+    font-size: small;
+    padding: 4px;
+    align-self: center;
 }
 
 div.user {
-    color: white;
-    width: 10%;
-}
-
-div.body {
-    width: 70%;
+    color: #999999;
+    font-size: small;
+    padding: 4px;
+    align-self: center;
 }
 
 div.text {
+    color: #eeeeee;
+    padding: 4px;
+    align-self: center;
+}
+
+div.presence-pane {
+    grid-row: 1;
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    background: #555555;
+}
+
+div.presence-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+div.presence-user {
     color: white;
+    align-self: center;
+    padding-left: 5px;
+    padding-right: 10px;
+}
+
+div.presence-status {
+    font-size: xx-large;
+    align-self: center;
+    padding-left: 10px;
+    padding-right: 5px;
+}
+
+.presence-active {
+    color: #009000;
+}
+
+.presence-idle {
+    color: #ac720c;
+}
+
+.presence-offline {
+    color: darkred;
+}
+
+.presence-control {
+    grid-row: 1;
+    grid-column: 2;
+}
+
+#presence-button {
+    color: black;
+    padding: 5px;
+    background: aliceblue;
+    border-style: solid;
+    border-radius: 8px;
+}
+
+.history-pane {
+    grid-row: 1;
+    grid-column: 3;
+}
+
+.compose-pane {
+    grid-row: 2;
+    grid-column: 2 / 4;
+}
+#content {
+    display: grid;
+    grid-template-columns: min-content min-content 1fr;
 }

@@ -29,8 +29,16 @@ Roadmap
 Phase 1
 -------
 
-* Subscribe by groups
-* Subscriptions are persistent
+* Login / Logout
+  * Manage a collection of users
+  * Create / delete users
+  * Consider using API keys for application principals
+* Create / destroy groups
+  * Invite users to subscribe
+  * Optionally, prevent uninvited users from subscribing
+* Subscribe / unsubscribe
+  * Subscribe by group name
+  * Subscriptions are persistent
 * “Delivery” is a match between a published message and an active
   subscription
   * The result is that your queue gets a pointer/handle/id for the
@@ -124,6 +132,12 @@ We kinda want to get n messages for the *user*, not per *group*.  That
 has major impact on the API.
 
 Presence.  And/or typing indication.
+* Not sure what to do here.
+* It's a really useful feature.
+* It's probably best done as a notification, rather than a database-like
+  thing, unlike Tickertape
+* It'll probably work well as an entry point into direct messaging too
+
 
 Garbage collection of deleted and/or thread-killed messages.
 

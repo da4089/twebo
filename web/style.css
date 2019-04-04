@@ -121,6 +121,13 @@ div.presence-status {
     scrollbar-color: #1b1b1d #2a2a2e;
 }
 
+.history-pane::-webkit-scrollbar {
+    background: #2a2a2e;
+}
+
+.history-pane::-webkit-scrollbar-thumb {
+    background: #1b1b1d;
+}
 
 .compose-pane {
     grid-row: 2;

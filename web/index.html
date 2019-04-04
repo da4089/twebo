@@ -26,7 +26,7 @@
             </div>
             <div class="presence-group">
                 <div class="presence-status presence-idle">&bull;</div>
-                <div class="presence-user">tom</div>
+                <div class="presence-user">ted</div>
             </div>
             <div class="presence-group">
                 <div class="presence-status presence-offline">&bull;</div>
@@ -89,19 +89,31 @@
         </div>
 
         <div class="compose-pane">
-            <div class="compose-group">
-                <label class="compose-label" for="select-group">To</label>
-                <select id="select-group">
-                    <option value="Chat">Chat</option>
-                    <option value="elvin">elvin</option>
-                    <option value="lunch">lunch</option>
-                    <option value="zaphod">zaphod</option>
-                </select>
-            </div>
-            <div class="compose-group"><label class="compose-label" for="text-from">From</label> <input id="text-from"/></div>
-            <div class="compose-group"><label class="compose-label" for="text-text">Text</label> <input id="text-text"/></div>
+
+            <label class="group-label label" for="group-select">To</label>
+            <select id="group-select" class="input">
+                <option value="Chat">Chat</option>
+                <option value="elvin">elvin</option>
+                <option value="lunch">lunch</option>
+                <option value="zaphod">zaphod</option>
+            </select>
+
+            <label class="from-label label" for="from-text">From</label>
+            <input id="from-text" class="input"/>
+
+            <label class="timeout-label label" for="timeout-text">Timeout</label>
+            <input id="timeout-text" class="input"/>
+
+            <label class="text-label label" for="text-text">Text</label>
+            <input id="text-text" class="input"/>
+
             <!-- <div>Attachments</div> -->
-            <div class="compose-group"><button type="button" class="btn btn-primary" id="btn-send">Send</button></div>
+
+            <div class="compose-buttons">
+                <button type="button" class="btn btn-primary" id="btn-send">Send</button>
+                <button type="button" class="btn btn-secondary" id="btn-clear">Clear</button>
+            </div>
+
         </div>
     </div>
 

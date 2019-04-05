@@ -5,15 +5,11 @@
     <meta charset=utf-8>
     <meta name=viewport content="width=device-width, initial-scale=1">
 
-    <!--
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    -->
     <link rel="stylesheet" type="text/css" href="style.css"/>
-
-
 </head>
 
 <body id="body">
+<!--
     <div id="content">
         <div id="presence-pane"  class="presence-pane">
             <div class="presence-group">
@@ -39,7 +35,6 @@
         </div>
 
         <div class="history-pane">
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -55,7 +50,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -71,7 +65,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -87,7 +80,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -103,7 +95,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -119,7 +110,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -135,7 +125,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -151,7 +140,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -167,7 +155,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -183,7 +170,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -199,7 +185,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -215,7 +200,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -231,7 +215,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -247,7 +230,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -263,7 +245,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -279,7 +260,6 @@
                 </div>
             </div>
 
-            <!-- Example message -->
             <div class="message">
                 <div class="time">
                     Today, 09:04
@@ -300,10 +280,10 @@
 
             <label class="group-label label" for="group-select">To</label>
             <select id="group-select" class="input">
-                <option value="Chat">Chat</option>
-                <option value="elvin">elvin</option>
-                <option value="lunch">lunch</option>
-                <option value="zaphod">zaphod</option>
+                <option class="group-option" value="Chat">Chat</option>
+                <option class="group-option" value="elvin">elvin</option>
+                <option class="group-option" value="lunch">lunch</option>
+                <option class="group-option" value="zaphod">zaphod</option>
             </select>
 
             <label class="from-label label" for="from-text">From</label>
@@ -315,7 +295,6 @@
             <label class="text-label label" for="text-text">Text</label>
             <input id="text-text" class="input"/>
 
-            <!-- <div>Attachments</div> -->
 
             <div class="compose-buttons">
                 <button type="button" class="btn btn-primary" id="btn-send">Send</button>
@@ -325,15 +304,81 @@
         </div>
     </div>
 
+    -->
+
+
     <script>
         /* Basic debug logging. */
         var log = function (m) {
             console.log(new Date().toISOString() + ' ' + m);
         };
 
+
+        /* Event notification/subscription implementation. */
+        function Event(sender) {
+            this._sender = sender;
+            this._listeners = [];
+            this._contexts = [];
+        }
+
+        Event.prototype.attach = function(listener, context=null) {
+            this._listeners.push(listener);
+            this._contexts.push(context);
+        };
+
+        Event.prototype.detach = function(listener) {
+            let pos = this._listeners.indexOf(listener);
+            if (pos < 0) {
+                log('Failed to remove missing listener from event: ' + listener.toString());
+                return;
+            }
+
+            this._listeners.splice(pos, 1);
+            this._contexts.splice(pos, 1);
+        };
+
+        Event.prototype.notify = function(event, args) {
+            for (let index = 0; index < this._listeners.length; index += 1) {
+                this._listeners[index].on_event(this._sender, event, args, this._contexts[index]);
+            }
+        };
+
+
         /* System. */
 
+
+        /*
+        **  Presence Model
+        */
+
+        function PresenceModel() {
+
+        }
+
+
+        /*
+        **  Presence View
+        */
+
+        function PresenceView(model, parent) {
+            this._model = model;
+            this._parent = parent;
+
+            this._pane = document.createElement("div");
+            this._pane.setAttribute("id", "presence-pane");
+            this._pane.setAttribute("class", "presence-pane");
+
+            this._parent.appendChild(this._pane);
+        }
+
+
+        /*
+        **  Composer Model
+        */
+
         function ComposerModel() {
+            this._event = new Event(this);
+
             this.clear();
         }
 
@@ -360,85 +405,261 @@
             this._message = "";
             this._timeout = 30;
             this._in_reply_to = null;
+
+            this._event.notify('set');
         };
 
+        ComposerModel.prototype.set_group = function(group) {
+            this._group = group;
+            this._event.notify('set');
+        };
+
+        ComposerModel.prototype.set_in_reply_to = function(in_reply_to) {
+            this._in_reply_to = in_reply_to;
+            this._event.notify('set');
+        };
+
+        ComposerModel.prototype.set_from = function(from) {
+            this._from = from;
+            this._event.notify('set');
+        };
+
+        ComposerModel.prototype.set_message = function(message) {
+            this._message = message;
+            this._event.notify('set');
+        };
+
+        ComposerModel.prototype.set_timeout = function(timeout) {
+            this._timeout = timeout;
+            this._event.notify('set');
+        };
+
+
+        /*
+        **  Composer View
+        */
 
         function ComposerView(model, parent) {
             this._model = model;
             this._parent = parent;
+
+            this._pane = document.createElement("div");
+            this._pane.setAttribute("class", "compose-pane");
+            this._parent.appendChild(this._pane);
+
+            // Group
+            this._group_label = document.createElement("label");
+            this._group_label.setAttribute("class", "label group-label");
+            this._group_label.setAttribute("for", "group-select");
+            this._group_label.innerHTML = "To";
+            this._pane.appendChild(this._group_label);
+
+            this._group_select = document.createElement("select");
+            this._group_select.setAttribute("id", "group-select");
+            this._group_select.setAttribute("class", "input");
+            this._pane.appendChild(this._group_select);
+
+            let options = ["Chat", "elvin", "lunch", "zaphod"];
+            let options_count = options.length;
+            for (var i = 0; i < options_count; i++) {
+                let option = document.createElement("option");
+                option.setAttribute("class", "group-option");
+                option.setAttribute("value", options[i]);
+                option.innerHTML = options[i];
+                this._group_select.appendChild(option);
+            }
+
+            // From
+            this._from_label = document.createElement("label");
+            this._from_label.setAttribute("class", "label from-label");
+            this._from_label.setAttribute("for", "from-text");
+            this._from_label.innerHTML = "From";
+            this._pane.appendChild(this._from_label);
+
+            this._from_text = document.createElement("text");
+            this._from_text.setAttribute("id", "from-text");
+            this._from_text.setAttribute("class", "input");
+            this._pane.appendChild(this._from_text);
+
+            // Timeout
+            this._timeout_label = document.createElement("label");
+            this._timeout_label.setAttribute("class", "label timeout-label");
+            this._timeout_label.setAttribute("for", "timeout-text");
+            this._timeout_label.innerHTML = "Timeout";
+            this._pane.appendChild(this._timeout_label);
+
+            this._timeout_text = document.createElement("text");
+            this._timeout_text.setAttribute("id", "timeout-text");
+            this._timeout_text.setAttribute("class", "input");
+            this._pane.appendChild(this._timeout_text);
+
+            // Text
+            this._text_label = document.createElement("label");
+            this._text_label.setAttribute("class", "label text-label");
+            this._text_label.setAttribute("for", "textt-text");
+            this._text_label.innerHTML = "Text";
+            this._pane.appendChild(this._text_label);
+
+            this._text_text = document.createElement("text");
+            this._text_text.setAttribute("id", "text-text");
+            this._text_text.setAttribute("class", "input");
+            this._pane.appendChild(this._text_text);
+
+            // Buttons
+            this._compose_buttons = document.createElement("div");
+            this._compose_buttons.setAttribute("class", "compose-buttons");
+            this._pane.appendChild(this._compose_buttons);
+
+            this._send_button = document.createElement("button");
+            this._send_button.setAttribute("type", "button");
+            this._send_button.setAttribute("class", "btn btn-primary");
+            this._send_button.setAttribute("id", "btn-send");
+            this._send_button.innerHTML = "Send";
+            this._compose_buttons.append(this._send_button);
+
+            this._clear_button = document.createElement("button");
+            this._clear_button.setAttribute("type", "button");
+            this._clear_button.setAttribute("class", "btn btn-secondary");
+            this._clear_button.setAttribute("id", "btn-clear");
+            this._clear_button.innerHTML = "Clear";
+            this._compose_buttons.append(this._clear_button);
+
         }
 
 
+        /*
+        **  Message Model
+        */
+
+        function MessageModel(timestamp, group, from, message, message_id, in_reply_to=null) {
+            this._timestamp = timestamp;
+            this._group = group;
+            this._from = from;
+            this._message = message;
+            this._message_id = message_id;
+            this._in_reply_to = in_reply_to;
+
+            this._parent = null;
+            this._replies = [];
+        }
+
+        MessageModel.prototype.id = function() {
+            return this._message_id;
+        };
+
+        MessageModel.prototype.in_reply_to = function() {
+            return this._in_reply_to;
+        };
+
+        function MessageView(model, parent) {
+            this._model = model;
+            this._parent = parent;
+
+
+        }
+
+
+        /*
+        **  History Model
+        */
 
         function HistoryModel() {
-
+            // Message-Id: MossageModel reference
+            this._messages = {};
         }
 
+        HistoryModel.prototype.add_message = function(message) {
+            // Create message model.
+            let m = new MessageModel(message);
+            this._messages[m.id()] = m;
+
+            this._event.notify('add', m);
+        };
+
+
+        /*
+        **  History View
+        */
 
         function HistoryView(model, parent) {
             this._model = model;
             this._parent = parent;
+
+            this._element = document.createElement("div");
+            this._element.setAttribute("class", "history-pane");
+            this._parent.appendChild(this._element);
         }
 
 
+        /*
+        **  System Model
+        */
 
         function SystemModel() {
             this._composer = new ComposerModel();
             this._history = new HistoryModel();
+            this._presence = new PresenceModel();
+
+            this._groups = [];
+            this._username = "";
+
         }
 
-        SystemModel.prototype.addZone = function(zone) {
-            var i;
-            var len = this._zones.length;
-            for (i = 0; i < len; i++) {
-                if (this._zones[i].id() == zone.id()) {
-                    log("Received duplicate addZone for: " + zone.id());
-                    return false;
-                }
-            }
-            this._zones.push(zone);
-            this.zoneAdded.notify({zone: zone});
-            return true;
+        SystemModel.prototype.get_username = function() {
+            return this._username;
         };
 
-        SystemModel.prototype.getZone = function(zoneId) {
-            var i;
-            var len = this._zones.length;
-            for (i = 0; i < len; i++) {
-                if (this._zones[i].id() == zoneId) {
-                    return this._zones[i];
-                }
-            }
-
-            return null;
+        SystemModel.prototype.get_groups = function() {
+            return this._groups;
         };
 
+        SystemModel.prototype.get_history = function() {
+            return this._history;
+        };
 
+        SystemModel.prototype.get_composer = function() {
+            return this._composer;
+        };
+
+        SystemModel.prototype.get_presence = function() {
+            return this._presence;
+        };
+
+        /*
+        **  System View
+         */
 
         function SystemView(model, parent) {
             this._model = model;
             this._parent = parent;
-            this._element = document.createElement('div');
 
-            this._parent.element().appendChild(this._element);
+            this._content_pane = document.createElement('div');
+            this._content_pane.setAttribute("id", "content");
+            this._parent.element().appendChild(this._content_pane);
+
+            this._presence_view = new PresenceView(model.get_presence(), this._content_pane);
+            this._history_view = new HistoryView(model.get_history(), this._content_pane);
+            this._composer_view = new ComposerView(model.get_composer(), this._content_pane);
         }
 
         SystemView.prototype.element = function() {
-            return this._element;
+            return this._content_pane;
         };
 
 
+        /*
+        **  System Controller
+         */
+
         function SystemController() {
             this._model = new SystemModel();
-            var element = document.getElementById("content");
-            this._view = new SystemView(this._model, {element: function() {return element; }});
+
+            var body = document.getElementById("body");
+            this._view = new SystemView(this._model, {element: function() {return body; }});
 
             this._serverUrl = 'ws://127.0.0.1:30030/';
             this._socket = null;
             this._heartbeats = 0;
-            this._zones = {}
-
-            this.updateWhispererEvent = new Event(this);
         }
 
         SystemController.prototype.model = function() {
@@ -550,7 +771,7 @@
 
         SystemController.prototype.sendMessage = function() {
 
-        }
+        };
 
         SystemController.prototype.run = function() {
             var self = this;
@@ -567,14 +788,6 @@
         var controller = new SystemController(parent);
         controller.run();
 
-
-
     </script>
-
-    <!--
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    -->
 </body>
 </html>

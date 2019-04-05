@@ -164,6 +164,9 @@ div.presence-status {
     padding: 8px 8px 8px 0;
 }
 
+.group-option {
+}
+
 #group-select {
     grid-row: 1;
     grid-column: 2;

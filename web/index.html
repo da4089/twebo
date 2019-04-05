@@ -382,9 +382,16 @@
             this.clear();
         }
 
-        ComposerModel.prototype.getMessage = function() {
+        ComposerModel.prototype.attach = function(listener) {
+            this._event.attach(listener);
+        };
+
+        ComposerModel.prototype.detach = function(listener) {
+            this._event.detach(listener);
+        };
+
+        ComposerModel.prototype.get_message = function() {
             let m = {};
-            m["MessageType"] = "v1.publish";
             m["Group"] = this._group;
             m["From"] = this._from;
             m["Message"] = this._message;
@@ -394,9 +401,7 @@
                 m["In-Reply-To"] = this._in_reply_to;
             }
 
-            let buf = JSON.stringify(m);
-
-            this._socket.send(buf);
+            return m;
         };
 
         ComposerModel.prototype.clear = function() {
@@ -406,32 +411,32 @@
             this._timeout = 30;
             this._in_reply_to = null;
 
-            this._event.notify('set');
+            this._event.notify('change');
         };
 
         ComposerModel.prototype.set_group = function(group) {
             this._group = group;
-            this._event.notify('set');
+            this._event.notify('change');
         };
 
         ComposerModel.prototype.set_in_reply_to = function(in_reply_to) {
             this._in_reply_to = in_reply_to;
-            this._event.notify('set');
+            this._event.notify('change');
         };
 
         ComposerModel.prototype.set_from = function(from) {
             this._from = from;
-            this._event.notify('set');
+            this._event.notify('change');
         };
 
         ComposerModel.prototype.set_message = function(message) {
             this._message = message;
-            this._event.notify('set');
+            this._event.notify('change');
         };
 
         ComposerModel.prototype.set_timeout = function(timeout) {
             this._timeout = timeout;
-            this._event.notify('set');
+            this._event.notify('change');
         };
 
 
@@ -442,6 +447,8 @@
         function ComposerView(model, parent) {
             this._model = model;
             this._parent = parent;
+
+            let self = this;
 
             this._pane = document.createElement("div");
             this._pane.setAttribute("class", "compose-pane");
@@ -457,6 +464,9 @@
             this._group_select = document.createElement("select");
             this._group_select.setAttribute("id", "group-select");
             this._group_select.setAttribute("class", "input");
+            this._group_select.addEventListener('change', function(e) {
+                self._model.set_group(e.target.value);
+            });
             this._pane.appendChild(this._group_select);
 
             let options = ["Chat", "elvin", "lunch", "zaphod"];
@@ -476,9 +486,12 @@
             this._from_label.innerHTML = "From";
             this._pane.appendChild(this._from_label);
 
-            this._from_text = document.createElement("text");
+            this._from_text = document.createElement("input");
             this._from_text.setAttribute("id", "from-text");
             this._from_text.setAttribute("class", "input");
+            this._from_text.addEventListener('change', function(e) {
+                self._model.set_from(e.target.value);
+            });
             this._pane.appendChild(this._from_text);
 
             // Timeout
@@ -488,9 +501,12 @@
             this._timeout_label.innerHTML = "Timeout";
             this._pane.appendChild(this._timeout_label);
 
-            this._timeout_text = document.createElement("text");
+            this._timeout_text = document.createElement("input");
             this._timeout_text.setAttribute("id", "timeout-text");
             this._timeout_text.setAttribute("class", "input");
+            this._timeout_text.addEventListener('change', function(e) {
+                self._model.set_timeout(e.target.value);
+            });
             this._pane.appendChild(this._timeout_text);
 
             // Text
@@ -500,9 +516,12 @@
             this._text_label.innerHTML = "Text";
             this._pane.appendChild(this._text_label);
 
-            this._text_text = document.createElement("text");
+            this._text_text = document.createElement("input");
             this._text_text.setAttribute("id", "text-text");
             this._text_text.setAttribute("class", "input");
+            this._text_text.addEventListener('change', function(e) {
+                self._model.set_message(e.target.value);
+            });
             this._pane.appendChild(this._text_text);
 
             // Buttons
@@ -515,16 +534,42 @@
             this._send_button.setAttribute("class", "btn btn-primary");
             this._send_button.setAttribute("id", "btn-send");
             this._send_button.innerHTML = "Send";
+            this._send_button.addEventListener('click', function(e) {
+                controller.send_message();
+            });
             this._compose_buttons.append(this._send_button);
+
 
             this._clear_button = document.createElement("button");
             this._clear_button.setAttribute("type", "button");
             this._clear_button.setAttribute("class", "btn btn-secondary");
             this._clear_button.setAttribute("id", "btn-clear");
             this._clear_button.innerHTML = "Clear";
+            this._clear_button.addEventListener('click', function(e) {
+                log("clear");
+                self._model.clear();
+            });
             this._compose_buttons.append(this._clear_button);
 
+            this._model.attach(this);
+
         }
+
+        ComposerView.prototype.set_from_model = function() {
+
+            let m = this._model.get_message();
+
+            this._group_select.value = m.Group;
+            this._from_text.value = m.From;
+            this._timeout_text.value = m.Timeout;
+            this._text_text.value = m.Message;
+        };
+
+        ComposerView.prototype.on_event = function(sender, event, args) {
+            if (event === 'change') {
+                this.set_from_model();
+            }
+        };
 
 
         /*
@@ -769,8 +814,15 @@
             });
         };
 
-        SystemController.prototype.sendMessage = function() {
+        SystemController.prototype.send_message = function() {
+            log("sendMessage");
 
+            let composer = this._model.get_composer();
+            let m = composer.get_message();
+            m["MessageType"] = "v1.publish";
+            let buf = JSON.stringify(m);
+            //this._socket.send(buf);
+            log(buf);
         };
 
         SystemController.prototype.run = function() {

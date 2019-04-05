@@ -5,6 +5,7 @@
     <meta charset=utf-8>
     <meta name=viewport content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 
@@ -815,14 +816,12 @@
         };
 
         SystemController.prototype.send_message = function() {
-            log("sendMessage");
-
             let composer = this._model.get_composer();
             let m = composer.get_message();
             m["MessageType"] = "v1.publish";
             let buf = JSON.stringify(m);
-            //this._socket.send(buf);
-            log(buf);
+            this._socket.send(buf);
+            log("Published: " + buf);
         };
 
         SystemController.prototype.run = function() {
